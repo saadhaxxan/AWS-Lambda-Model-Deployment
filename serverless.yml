@@ -1,0 +1,64 @@
+service: depthestimation
+
+provider:
+  name: aws
+  runtime: python3.7
+  profile: depthestimation
+  region: us-east-1
+  timeout: 60
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:getObject
+      Resource: arn:aws:s3:::depthestimation/models/*
+    - Effect: Allow
+      Action:
+        - "lambda:InvokeFunction"
+      Resource: "*"
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    zip: true
+    slim: true
+    strip: false
+    noDeploy:
+      - docutils
+      - jmespath
+      - pip
+      - python-dateutil
+      - setuptools
+      - six
+      - tensorboard
+    useStaticCache: true
+    useDownloadCache: true
+    cacheLocation: "./cache"
+
+package:
+  individually: false
+  exclude:
+    - package.json
+    - package-log.json
+    - node_modules/**
+    - cache/**
+    - test/**
+    - __pycache__/**
+    - .pytest_cache/**
+    - model/pytorch_model.bin
+    - raw/**
+    - .vscode/**
+    - .ipynb_checkpoints/**
+
+functions:
+  transformImage:
+    handler: src/handler.lambda_handler
+    memorySize: 3008
+    timeout: 300
+    events:
+      - http:
+          path: transform
+          method: post
+          cors: true
+
+plugins:
+  - serverless-python-requirements
