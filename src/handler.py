@@ -15,6 +15,20 @@ from PIL import Image
 
 import sys
 import PIL.Image as pil
+import numpy as np
+import tensorflow as tf
+import cv2
+
+
+def preprocess(fp):
+    img = cv2.imread(fp)
+    img = cv2.resize(img, (513, 513))
+    # img = img.transpose((2, 0, 1))
+    img = np.expand_dims(img, 0)
+    img = img.astype(np.float32)
+    img = (img - 127.5) / 127.5
+    print(img.shape)
+    return img
 
 
 def img_to_base64_str(img):
@@ -47,38 +61,29 @@ def lambda_handler(event, context):
     image = Image.open(BytesIO(dec))
     image = image.convert("RGB")
 
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-    else:
-        device = torch.device("cpu")
-    with torch.no_grad():        # Load image and preprocess
-        original_width, original_height = image.size
-        input_image = image.resize(
-            (feed_width, feed_height), pil.LANCZOS)
-        input_image = transforms.ToTensor()(input_image).unsqueeze(0)
+    interpreter = tf.lite.Interpreter(model_path="decrypted.tflite")
 
-        # PREDICTION
-        input_image = input_image.to(device)
-        features = encoder(input_image)
-        outputs = depth_decoder(features)
-
-        disp = outputs[("disp", 0)]
-        disp_resized = torch.nn.functional.interpolate(
-            disp, (original_height, original_width), mode="bilinear", align_corners=False)
-
-        # Saving numpy file
-        # output_name = os.path.splitext(os.path.basename(image_path))[0]
-        scaled_disp, depth = disp_to_depth(disp, 0.1, 100)
-        # Saving colormapped depth image
-        disp_resized_np = disp_resized.squeeze().cpu().numpy()
-        vmax = np.percentile(disp_resized_np, 95)
-        normalizer = mpl.colors.Normalize(
-            vmin=disp_resized_np.min(), vmax=vmax)
-        mapper = cm.ScalarMappable(norm=normalizer, cmap='magma')
-        colormapped_im = (mapper.to_rgba(disp_resized_np)[
-            :, :, :3] * 255).astype(np.uint8)
-        im = pil.fromarray(colormapped_im)
-        result = {"output": img_to_base64_str(im)}
+    interpreter.allocate_tensors()
+    # Get input and output tensors.
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+    # Test the model on random input data.
+    input_shape = input_details[0]['shape']
+    # print(input_shape)
+    input_data = np.array(preprocess('test4.jpg'), dtype=np.float32)
+    interpreter.set_tensor(input_details[0]['index'], input_data)
+    interpreter.invoke()
+    # The function `get_tensor()` returns a copy of the tensor data.
+    # Use `tensor()` in order to get a pointer to the tensor.
+    output_data = interpreter.get_tensor(output_details[0]['index'])
+    print(output_data.shape)
+    img = output_data
+    img = np.squeeze(img)
+    img = img[:, :, 0]
+    img *= 255.0
+    print(img.shape)
+    img = np.where(img < 1, 0, img)
+    result = {"output": img_to_base64_str(im)}
     return {
         "statusCode": 200,
         "body": json.dumps(result),
