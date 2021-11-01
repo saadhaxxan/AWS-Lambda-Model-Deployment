@@ -61,20 +61,15 @@ def lambda_handler(event, context):
     image = Image.open(BytesIO(dec))
     image = image.convert("RGB")
 
-    interpreter = tf.lite.Interpreter(model_path="decrypted.tflite")
+    interpreter = tf.lite.Interpreter(model_path=model)
 
     interpreter.allocate_tensors()
     # Get input and output tensors.
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
-    # Test the model on random input data.
-    input_shape = input_details[0]['shape']
-    # print(input_shape)
-    input_data = np.array(preprocess('test4.jpg'), dtype=np.float32)
+    input_data = np.array(preprocess(image), dtype=np.float32)
     interpreter.set_tensor(input_details[0]['index'], input_data)
     interpreter.invoke()
-    # The function `get_tensor()` returns a copy of the tensor data.
-    # Use `tensor()` in order to get a pointer to the tensor.
     output_data = interpreter.get_tensor(output_details[0]['index'])
     print(output_data.shape)
     img = output_data
@@ -83,7 +78,7 @@ def lambda_handler(event, context):
     img *= 255.0
     print(img.shape)
     img = np.where(img < 1, 0, img)
-    result = {"output": img_to_base64_str(im)}
+    result = {"output": img_to_base64_str(img)}
     return {
         "statusCode": 200,
         "body": json.dumps(result),
