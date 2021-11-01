@@ -15,14 +15,6 @@ from PIL import Image
 
 import sys
 import PIL.Image as pil
-import matplotlib as mpl
-import matplotlib.cm as cm
-
-import torch
-from torchvision import transforms, datasets
-
-import networks
-from networks.layers import disp_to_depth
 
 
 def img_to_base64_str(img):
@@ -35,56 +27,18 @@ def img_to_base64_str(img):
 
 
 def load_models(s3, bucket):
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-    else:
-        device = torch.device("cpu")
-    res = ["640x192"]
-    response_enc = s3.get_object(Bucket=bucket, Key=f"models/encoder.pth")
-    response_dec = s3.get_object(Bucket=bucket, Key=f"models/depth.pth")
+    model = s3.get_object(Bucket=bucket, Key=f"models/decrypted.tflite")
     print("Loading pretrained encoder")
-    encoder = networks.ResnetEncoder(18, False)
-    loaded_dict_enc = torch.load(
-        BytesIO(response_enc["Body"].read()), map_location=device)
+    return model
 
-    # extract the height and width of image that this model was trained with
-    feed_height = loaded_dict_enc['height']
-    feed_width = loaded_dict_enc['width']
-    filtered_dict_enc = {
-        k: v for k, v in loaded_dict_enc.items() if k in encoder.state_dict()}
-    encoder.load_state_dict(filtered_dict_enc)
-    encoder.to(device)
-    encoder.eval()
-
-    print("Loading pretrained decoder")
-    depth_decoder = networks.DepthDecoder(
-        num_ch_enc=encoder.num_ch_enc, scales=range(4))
-    loaded_dict = torch.load(
-        BytesIO(response_dec["Body"].read()), map_location=device)
-    depth_decoder.load_state_dict(loaded_dict)
-    depth_decoder.to(device)
-    depth_decoder.eval()
-
-    return encoder, depth_decoder, feed_height, feed_width
-
-
-gpu = -1
 
 s3 = boto3.client("s3")
-bucket = "depthestimation"
-
-mapping_id_to_style = {0: "640x192"}
-
-encoder, depth_decoder, feed_height, feed_width = load_models(s3, bucket)
+bucket = "skytflite"
+model = load_models(s3, bucket)
 print(f"models loaded ...")
 
 
 def lambda_handler(event, context):
-    """
-    lambda handler to execute the image transformation
-    """
-    # warming up the lambda
-
     data = json.loads(event["body"])
     print("data keys :", data.keys())
     image = data["image"]

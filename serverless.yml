@@ -1,16 +1,16 @@
-service: depthestimation
+service: skytflite
 
 provider:
   name: aws
   runtime: python3.7
-  profile: depthestimation
+  profile: default
   region: us-east-1
   timeout: 60
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:getObject
-      Resource: arn:aws:s3:::depthestimation/models/*
+      Resource: arn:aws:s3:::skytflite/models/*
     - Effect: Allow
       Action:
         - "lambda:InvokeFunction"
