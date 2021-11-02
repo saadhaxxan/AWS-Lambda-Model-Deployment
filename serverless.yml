@@ -48,6 +48,7 @@ package:
     - raw/**
     - .vscode/**
     - .ipynb_checkpoints/**
+    - venv/**
 
 functions:
   transformImage:
