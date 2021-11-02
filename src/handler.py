@@ -17,12 +17,10 @@ import sys
 import PIL.Image as pil
 import numpy as np
 import tflite_runtime.interpreter as tflite
-import cv2
 
 
 def preprocess(fp):
-    img = cv2.imread(fp)
-    img = cv2.resize(img, (513, 513))
+    img = fp.resize((513, 513))
     # img = img.transpose((2, 0, 1))
     img = np.expand_dims(img, 0)
     img = img.astype(np.float32)
