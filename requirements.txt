@@ -1,3 +1,4 @@
---extra-index-url https://google-coral.github.io/py-repo/ tflite_runtime
+https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp36-cp36m-linux_aarch64.whl
+numpy
 Pillow==6.2.1
 opencv-python
