@@ -16,7 +16,7 @@ from PIL import Image
 import sys
 import PIL.Image as pil
 import numpy as np
-import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 import cv2
 
 
@@ -42,7 +42,7 @@ def img_to_base64_str(img):
 
 def load_models(s3, bucket):
     model = s3.get_object(Bucket=bucket, Key=f"models/decrypted.tflite")
-    print("Loading pretrained encoder")
+    print("Loading tflite model")
     return model
 
 
@@ -61,7 +61,7 @@ def lambda_handler(event, context):
     image = Image.open(BytesIO(dec))
     image = image.convert("RGB")
 
-    interpreter = tf.lite.Interpreter(model_path=model)
+    interpreter = tflite.Interpreter(model_path=model)
 
     interpreter.allocate_tensors()
     # Get input and output tensors.
