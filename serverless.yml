@@ -3,7 +3,7 @@ service: skytflite
 provider:
   name: aws
   runtime: python3.7
-  profile: default
+  profile: skytflite
   region: us-east-1
   timeout: 60
   iamRoleStatements:
