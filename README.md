@@ -1,1 +1,1 @@
-# aws serverless lambda backend
+# aws lambda backend
