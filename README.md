@@ -21,9 +21,9 @@ pip install -r requirements.txt
 ```
 aws configure
 ```
-3. replace profile in serverless.yml with your profile and edit the code in src/handler.py file if you need any logic change
+3. Replace profile in serverless.yml with your profile and edit the code in src/handler.py file if you need any logic change
 
-4. deploy the app 
+4. Seploy the app 
 ```
 serverless deploy
 ```
