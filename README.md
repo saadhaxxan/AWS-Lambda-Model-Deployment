@@ -3,6 +3,16 @@
 <h4>This project allows you to deploy a Tflite image model to AWS Lambda using Serverless Framework</h4>
 </div>
 
+## Installation steps
+
+Clone the Repo and install the requirements
+
+```
+git clone https://github.com/saadhaxxan/AWS-Lambda-Model-Deployment.git
+cd AWS-Lambda-Model-Deployment
+pip install -r requirements.txt
+```
+
 ## Author
 You can get in touch with me on my LinkedIn Profile:
 
