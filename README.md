@@ -15,6 +15,7 @@ npm install -g serverless
 ```
 git clone https://github.com/saadhaxxan/AWS-Lambda-Model-Deployment.git
 cd AWS-Lambda-Model-Deployment
+npm install
 pip install -r requirements.txt
 ```
 2. Configure AWS CLI and serverless.yml file with your credentials
