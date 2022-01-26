@@ -17,6 +17,16 @@ git clone https://github.com/saadhaxxan/AWS-Lambda-Model-Deployment.git
 cd AWS-Lambda-Model-Deployment
 pip install -r requirements.txt
 ```
+2. Configure AWS CLI and serverless.yml file with your credentials
+```
+aws configure
+```
+3. replace profile in serverless.yml with your profile and edit the code in src/handler.py file if you need any logic change
+
+4. deploy the app 
+```
+serverless deploy
+```
 
 ## Author
 You can get in touch with me on my LinkedIn Profile:
