@@ -2,3 +2,4 @@ https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp36-cp36m-linux_a
 numpy
 Pillow==6.2.1
 opencv-python
+boto3
