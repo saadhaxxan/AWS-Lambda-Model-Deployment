@@ -5,7 +5,12 @@
 
 ## Installation steps
 
-Clone the Repo and install the requirements
+1. Install awscli from [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and Serverless framework from below command
+```
+npm install -g serverless
+```
+
+2. Clone the Repo and install the requirements
 
 ```
 git clone https://github.com/saadhaxxan/AWS-Lambda-Model-Deployment.git
