@@ -24,7 +24,7 @@ aws configure
 ```
 3. Replace profile in serverless.yml with your profile and edit the code in src/handler.py file if you need any logic change
 
-4. Seploy the app 
+4. Deploy the app 
 ```
 serverless deploy
 ```
