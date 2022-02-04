@@ -1,6 +1,9 @@
 <div align="center">
 <h1>AWS serverless lambda Image Model Deployment</h1>
 <h4>This project allows you to deploy a Tflite image model to AWS Lambda using Serverless Framework</h4>
+   <div align="center">
+    <img src="architecture.png" width='700'/>
+  </div>
 </div>
 
 ## Installation steps
