@@ -21,9 +21,10 @@ cd AWS-Lambda-Model-Deployment
 npm install
 pip install -r requirements.txt
 ```
-2. Configure AWS CLI and serverless.yml file with your credentials
+2. Configure AWS CLI and serverless.yml file with your credentials (provided by AWS)
 ```
 aws configure
+serverless config credentials --provider aws --key youraccesskey --secret yoursecretkey
 ```
 3. Replace profile in serverless.yml with your profile and edit the code in src/handler.py file if you need any logic change
 
