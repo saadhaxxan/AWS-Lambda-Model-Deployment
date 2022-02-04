@@ -6,7 +6,7 @@
 </div>
 
 
-<h2>This project allows you to deploy a Tflite image model to AWS Lambda using Serverless Framework Pytorch version is coming soon</h2>
+<h2>This project allows you to deploy a Tflite image model to AWS Lambda using Serverless Framework (Pytorch version is coming soon)</h2>
 
 ## Installation steps
 
