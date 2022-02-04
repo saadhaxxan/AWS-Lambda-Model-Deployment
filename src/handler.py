@@ -25,7 +25,6 @@ def preprocess(fp):
     img = np.expand_dims(img, 0)
     img = img.astype(np.float32)
     img = (img - 127.5) / 127.5
-    print(img.shape)
     return img
 
 
@@ -39,20 +38,19 @@ def img_to_base64_str(img):
 
 
 def load_models(s3, bucket):
-    model = s3.get_object(Bucket=bucket, Key=f"models/decrypted.tflite")
+    model = s3.get_object(Bucket=bucket, Key=f"your_model_filename")
     print("Loading tflite model")
     return model
 
 
 s3 = boto3.client("s3")
-bucket = "skytflite"
+bucket = "your_bucket_name"
 model = load_models(s3, bucket)
 print(f"models loaded ...")
 
 
 def lambda_handler(event, context):
     data = json.loads(event["body"])
-    print("data keys :", data.keys())
     image = data["image"]
     image = image[image.find(",") + 1:]
     dec = base64.b64decode(image + "===")
@@ -69,12 +67,10 @@ def lambda_handler(event, context):
     interpreter.set_tensor(input_details[0]['index'], input_data)
     interpreter.invoke()
     output_data = interpreter.get_tensor(output_details[0]['index'])
-    print(output_data.shape)
     img = output_data
     img = np.squeeze(img)
     img = img[:, :, 0]
     img *= 255.0
-    print(img.shape)
     img = np.where(img < 1, 0, img)
     result = {"output": img_to_base64_str(img)}
     return {
