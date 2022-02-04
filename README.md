@@ -7,7 +7,7 @@
 
 
 <h2>This project allows you to deploy a Tflite image model to AWS Lambda using Serverless Framework Pytorch version is coming soon</h2>
-<br>
+
 ## Installation steps
 
 1. Install awscli from [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and Serverless framework from below command
